@@ -13,5 +13,10 @@ int main(){
     
     robos.insert(it, "robo4");
 
+    cout << "O podio esta como: " << endl;
+    for (it = robos.begin(); it != robos.end(); ++it){
+        cout << *it << endl;
+    }
+
     return 0;
 }
