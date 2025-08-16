@@ -1,0 +1,1 @@
+Neste repositório eu estarei publicando os códigos feitos por mim na disciplina de Algoritmos e Estruturas de Dados II. Serão publicados atividades com códigos pequenos e Projetos de Programa, passados como avaliação pelo professor, e provavelmente feito em dupla.
