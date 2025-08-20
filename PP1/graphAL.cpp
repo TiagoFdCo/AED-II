@@ -29,7 +29,7 @@ public:
     void add_edge(Vertex u, Vertex v);
     void remove_edge(Vertex u, Vertex v);
     list<Vertex> get_adj(Vertex u);
-    void print_graph(GraphAL g); //FAZ ESSA PORRA AQUI!!!
+    void print_graph(); //FAZ ESSA PORRA AQUI!!!
     uint get_num_vertices();
     uint get_num_edges();
 
@@ -63,16 +63,25 @@ uint GraphAL::get_num_edges(){
     return num_edges;
 }
 
+void GraphAL::print_graph(){
+    for (int i = 0; i < num_vertices; i++){
+        cout << i << ": ";
+        for (Vertex v : adj[i]){
+            cout << v << " ";
+        }
+        cout << endl;
+    }
+}
+
 int main(){
     GraphAL g(5);
 
-    g.add_edge(5, 0);
     g.add_edge(1, 0);
     g.add_edge(3, 2);
     g.add_edge(1, 2);
     g.add_edge(1, 4);
 
-    g.get_adj(1);
+    g.print_graph();
 
     return 0;
 }
