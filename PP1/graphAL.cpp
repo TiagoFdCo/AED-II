@@ -29,7 +29,7 @@ public:
     void add_edge(Vertex u, Vertex v);
     void remove_edge(Vertex u, Vertex v);
     list<Vertex> get_adj(Vertex u);
-    void print_graph(); //FAZ ESSA PORRA AQUI!!!
+    void print_graph(); 
     uint get_num_vertices();
     uint get_num_edges();
 
@@ -37,9 +37,6 @@ public:
 
 //Metodos
 void GraphAL::add_edge(Vertex u, Vertex v){
-    /*if (u < 0 || v < 0){
-        throw invalid_argument("Vertice(s) invalido(s)");
-    }*/
     adj[u].push_back(v);
     adj[v].push_back(u);
     num_edges++;
