@@ -34,6 +34,7 @@ public:
 
     //metodos abstraidos
     void add_edge(const Vertex& u, const Vertex& v);
+    void remove_edge(const Vertex& u, const Vertex& v);
     list<Vertex> get_adj(const Vertex& u) const;
     void print_adjacency_list(const GraphAL& g); 
     uint get_num_vertices() const;
@@ -59,6 +60,12 @@ void GraphAL::add_edge(const Vertex& u, const Vertex& v){
     adj[u].push_back(v);
     adj[v].push_back(u);
     num_edges++;
+}
+
+void GraphAL::remove_edge(const Vertex& u, const Vertex& v){
+    adj[u].remove(v);
+    adj[v].remove(u);
+    num_edges--;
 }
 
  list<Vertex> GraphAL::get_adj(const Vertex& u) const{
