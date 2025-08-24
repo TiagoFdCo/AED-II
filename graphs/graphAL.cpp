@@ -61,7 +61,7 @@ uint GraphAL::get_num_edges(){
 }
 
 void GraphAL::print_graph(){
-    for (int i = 0; i < num_vertices; i++){
+    for (uint i = 0; i < num_vertices; i++){
         cout << i << ": ";
         for (Vertex v : adj[i]){
             cout << v << " ";
@@ -78,7 +78,7 @@ int main(){
     g.add_edge(1, 2);
     g.add_edge(1, 4);
 
-    g.print_graph();
+    g.print_graph(); 
 
     return 0;
 }
