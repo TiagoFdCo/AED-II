@@ -66,7 +66,6 @@ void GraphAM::remove_edge(const Vertex& u, const Vertex& v){
     num_edges--;
 }
 
-//TESTAR ESSA PORRA AQUI
 list<Vertex> GraphAM::get_adj(const Vertex& v) const{
     list<Vertex> neighbors;
 
