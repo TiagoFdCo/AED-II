@@ -115,7 +115,7 @@ int main(){
     cin >> m; //qtd_arestas
     GraphAM g(n);
 
-    for (int i = 0; i < m ; i++){
+    for (uint i = 0; i < m ; i++){
         cin >> u;
         cin >> v;
         g.add_edge(u, v);
