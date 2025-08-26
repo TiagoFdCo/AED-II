@@ -4,9 +4,9 @@
 
 using namespace std;
 
-typedef unsigned int uint;
-typedef unsigned int Vertex;
-typedef float Weight;
+using uint = unsigned int;
+using Vertex = unsigned int;
+using Weight = float;
 
 class PgraphAL{
 private:
@@ -29,18 +29,18 @@ public:
     }
 
     //metodos abstraidos
-    void add_edge(Vertex u, Vertex v, Weight w);
-    void remove_edge(Vertex u, Vertex v, Weight w); 
-    list<pair<Vertex, Weight>> get_adj(Vertex u);
-    void print_graph(); 
-    uint get_num_vertices();
-    uint get_num_edges();
-    Weight get_weight(); 
+    void add_edge(const Vertex& u, const Vertex& v, const Weight& w);
+    void remove_edge(const Vertex& u, const Vertex& v, const Weight& w); 
+    list<pair<Vertex, Weight>> get_adj(const Vertex& u) const;
+    void print_graph() const; 
+    uint get_num_vertices() const;
+    uint get_num_edges() const;
+    Weight get_weight() const; 
 
 };
 
 //Metodos
-void PgraphAL::add_edge(Vertex u, Vertex v, Weight w){
+void PgraphAL::add_edge(const Vertex& u, const Vertex& v, const Weight& w){
     adj[u].push_back({v, w});
     //adiciona o peso junto ao elemento adjacente
 
@@ -49,7 +49,7 @@ void PgraphAL::add_edge(Vertex u, Vertex v, Weight w){
     num_edges++;
 }
 
-void PgraphAL::remove_edge(Vertex u, Vertex v, Weight w){
+void PgraphAL::remove_edge(const Vertex& u, const Vertex& v, const Weight& w){
     adj[u].remove({v, w});
     adj[v].remove({u, w});
     num_edges--;
