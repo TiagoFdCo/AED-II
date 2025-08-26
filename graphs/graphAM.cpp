@@ -58,6 +58,11 @@ void GraphAM::add_edge(const Vertex& u, const Vertex& v){
     adj[u][v] = 1;
     adj[v][u] = 1;
     num_edges++;
+
+    /*
+    para o grafo ponderado, pode-se colocar como parâmetro, além de u e v, um peso,
+    que seria incluido no valor da matriz na posição [u][v].
+    */
 }
 
 void GraphAM::remove_edge(const Vertex& u, const Vertex& v){
@@ -105,7 +110,7 @@ void GraphAM::display_graph() const{
 }
 
 int main(){
-    GraphAM g(4);
+    GraphAM g(3);
 
     g.add_edge(0, 1);
     g.add_edge(0, 2);
