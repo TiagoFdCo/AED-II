@@ -1,7 +1,6 @@
 #include <iostream>
-#include <queue>
+
 #include <limits>
-#include <utility>
 #include <list>
 #include <vector>
 
@@ -14,6 +13,59 @@ using Vertex = unsigned int;
 //Implementacao do infinito e NIL
 constexpr int INF = numeric_limits<int>::infinity();
 constexpr Vertex NIL = numeric_limits<Vertex>::max(); 
+
+//Implementacao da classe Queue
+
+template <typename T>
+class Queue{
+private:
+    T item;
+    list<T> *qlist; //lista duplamente encadeada dinamica
+    int num_itens;
+
+public:
+
+    //construtores
+    Queue(): item(0), num_itens(0){
+        qlist = new list<T> [item]; // inicializo a lista nova 
+    }
+
+    //destrutor
+    ~Queue(){
+        delete[] qlist;
+        qlist = nullptr;
+    }
+    void enqueue(T item); //adiciona um item 
+    void dequeue(); //retira um item
+    T front(); //retorna o item na frente da fila
+    int size(); //retorna o tamanho da fila
+    bool empty(); //verifica de a fila está vazia (true ou false)
+};
+
+template<typename T>
+void Queue<T>::enqueue(T item){
+    qlist->push_back(item);
+    num_itens++;
+}
+
+template<typename T>
+void Queue<T>::dequeue(){
+    qlist->pop_front();
+    num_itens--;
+}
+
+template<typename T>
+T Queue<T>::front(){
+    return qlist->front();
+}
+
+template<typename T>
+bool Queue<T>::empty(){
+    if(num_itens == 0){
+        return true;
+    }
+    return false;
+}
 
 //Implementacao da classe GraphAL
 class GraphAL{
@@ -164,20 +216,20 @@ void BFS::runBFS(const Vertex& s){
     distance[s] = 0; //s esta a distancia 0 se si mesmo
     parent[s] = NIL; //s nao tem predecessores
 
-    queue<Vertex> q;
-    q.push(s); //enfileira o source para analise de seus adjacentes
+    Queue<Vertex> q;
+    q.enqueue(s); //enfileira o source para analise de seus adjacentes
     
     while (!q.empty())
     {
        Vertex u = q.front(); //pega o elemento da frente
-       q.pop(); //desenfileira o elemento
+       q.dequeue(); //desenfileira o elemento
        for (Vertex v : graph.get_adj(u)){ //pra cada vertice v dentro da lista de adjacencia u desse vertice
             if(color[v] == Color::WHITE){ 
                 color[v] = Color::GRAY; //muda a cor pra CINZA
                 distance[v] = distance[u] + 1; //aumenta a distancia do vertice adjacente em 1
                 parent[v] = u; //coloca u, que o vertice enfileirado, como antecessor dos vertices consultados
                 order.push_back(v); //registra a ordem
-                q.push(v);
+                q.enqueue(v);
             }
        }
        color[u] = Color::BLACK; //muda a cor do vertice na fila para preto
