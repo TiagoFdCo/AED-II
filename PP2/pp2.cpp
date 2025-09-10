@@ -290,10 +290,104 @@ void fillBFS(GraphAL g){
 //-----------------------------------------------------------------------------------------------------------------------------
 //TABULEIRO--------------------------------------------------------------------------------------------------------------------
 
-class Chessboard{};
-class Horseman{};
+class Chessboard{
+private:
+    GraphAL graph;
+public:
+    //construtor
+    Chessboard(): graph(64){
+        createChessboard();
+    }
 
-//-----------------------------------------------------------------------------------------------------------------------------
+    //metodos
+    void createChessboard();
+    GraphAL& getGraph();
+
+    string posicaoParaNotacao(int x, int y);
+    pair<int, int> notacaoParaPosicao(const string& s);
+
+    vector<string> getHorseMoves(const string& pos);
+
+    int notacaoParaIndice(const string& s);
+    string indiceParaNotacao(int idx);
+};
+
+void Chessboard::createChessboard(){
+    uint qtd_vertices = 64;
+
+    GraphAL g(qtd_vertices);
+
+    //movimentos do cavalo
+    int dx[8] = {2, 2, 1, 1, -1, -1, -2, -2};
+    int dy[8] = {1, -1, 2, -2, 2, -2, 1, -1};
+
+    for (int x = 0; x < 8; x++){
+        for(int y = 0; y < 8; y++){
+            int u = x * 8 + y;
+            for(int k = 0; k < 8; k++){
+                int nx = x + dx[k];
+                int ny = y + dy[k];
+                if (nx >= 0 && nx < 8 && ny >= 0 && ny < 8){
+                    int v = nx * 8 + ny;
+                    graph.add_edge(u, v);
+                }
+            }
+        }
+    }
+    
+    graph.print_adjacency_list(graph); //so pra teste
+}
+
+GraphAL& Chessboard::getGraph(){
+    return graph;
+}
+
+string Chessboard::posicaoParaNotacao(int x, int y){
+    return string(1, 'a' + y) + string(1, '1' + x);
+}
+
+pair<int, int> Chessboard::notacaoParaPosicao(const string& s){
+    return {s[1] - '1', s[0] - 'a'};
+}
+
+vector<string> Chessboard::getHorseMoves(const string& pos){
+    auto [x, y] = notacaoParaPosicao(pos);
+    vector<string> moves;
+    int dx[8] = {2, 2, 1, 1, -1, -1, -2, -2};
+    int dy[8] = {1, -1, 2, -2, 2, -2, 1, -1};
+
+    for(int k = 0; k < 8; k++){
+        int nx = x + dx[k];
+        int ny = y + dy[k];
+        if (nx >= 0 && nx < 8 && ny >= 0 && ny < 8){
+            moves.push_back(posicaoParaNotacao(nx, ny));
+        }
+    }
+    return moves;
+}
+
+int Chessboard::notacaoParaIndice(const string& s){
+    auto [x, y] = notacaoParaPosicao(s);
+    return x*8 + y;
+}
+
+string Chessboard::indiceParaNotacao(int idx){
+    int x = idx / 8;
+    int y = idx % 8;
+    return posicaoParaNotacao(x, y);
+}
+
+void executaAplicacao(){
+    Chessboard board;
+
+    string inicio, fim;
+//terminar esse negocio aqui
+}
+
+//MAIN-----------------------------------------------------------------------------------------------------------------------------
 int main(){
+    Chessboard board;
+
+
     return 0;
 }
