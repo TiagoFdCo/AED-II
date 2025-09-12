@@ -4,44 +4,40 @@
 #include <utility>
 #include <limits>
 
-
 using namespace std;
 
-//ESTRUTURAS DE DADOS E BUSCA--------------------------------------------------------------------------------------------------
-//Implementacao de apelidos usando "using"
+// ESTRUTURAS DE DADOS E BUSCA
 using uint = unsigned int;
 using Vertex = unsigned int;
 
-//Implementacao do infinito e NIL
-constexpr int INF = numeric_limits<int>::infinity();
-constexpr Vertex NIL = numeric_limits<Vertex>::max(); 
+// INF e NIL
+constexpr int INF = numeric_limits<int>::max();
+constexpr Vertex NIL = numeric_limits<Vertex>::max();
 
-//Implementacao da classe Queue
-
+// QUEUE 
 template <typename T>
 class Queue{
 private:
-    T item;
     list<T> *qlist; //lista duplamente encadeada dinamica
     int num_itens;
 
 public:
 
     //construtores
-    Queue(): item(0), num_itens(0){
-        qlist = new list<T> [item]; // inicializo a lista nova 
+    Queue():num_itens(0){
+        qlist = new list<T>(); // inicializo a lista nova 
     }
 
     //destrutor
     ~Queue(){
-        delete[] qlist;
+        delete qlist;
         qlist = nullptr;
     }
     void enqueue(T item); //adiciona um item 
     void dequeue(); //retira um item
     T front(); //retorna o item na frente da fila
     int size(); //retorna o tamanho da fila
-    bool empty(); //verifica de a fila está vazia (true ou false)
+    bool empty(); //verifica de a fila estah vazia (true ou false)
 };
 
 template<typename T>
@@ -68,8 +64,7 @@ bool Queue<T>::empty(){
     }
     return false;
 }
-
-//Implementacao da classe GraphAL
+// GraphAL
 class GraphAL{
 private:
     uint num_vertices;
@@ -179,215 +174,179 @@ GraphAL fillGraph(){
     return g;
 }
 
-//Para a classe BFS
-enum class Color{
-    WHITE,
-    GRAY,
-    BLACK
-};
+// BFS
+enum class Color{ WHITE, GRAY, BLACK };
 
-//Implementacao da classe BFS
 class BFS{
 private:
     GraphAL& graph;
-    vector<int> distance; //distancia
-    vector<Color> color; //rotulo do vertice
-    vector<Vertex> parent; //predecessor
-    vector<Vertex> order; //ordem de busca
+    vector<int> distance;
+    vector<Color> color;
+    vector<Vertex> parent;
+    vector<Vertex> order;
 
 public:
-    //construtores
     BFS(GraphAL& g):
-    graph(g),
-    distance(g.get_num_vertices(), INF),
-    color(g.get_num_vertices(), Color::WHITE),
-    parent(g.get_num_vertices(), NIL){}
+        graph(g),
+        distance(g.get_num_vertices(), INF),
+        color(g.get_num_vertices(), Color::WHITE),
+        parent(g.get_num_vertices(), NIL) {}
 
-    //metodos publicos
-    void runBFS(const Vertex& s);
-    int getDistance(const Vertex& v);
-    Color getColor(const Vertex& v);
-    Vertex getParent(const Vertex& v);
-    vector<Vertex> getOrder() const;
-    void printBFS();
+    void runBFS(const Vertex& s){
+        // reinicializa vetores caso sejam de execucoes anteriores
+        for(size_t i=0;i<distance.size();++i){
+            distance[i] = INF;
+            color[i] = Color::WHITE;
+            parent[i] = NIL;
+        }
+        order.clear();
+
+        color[s] = Color::GRAY;
+        distance[s] = 0;
+        parent[s] = NIL;
+
+        Queue<Vertex> q;
+        q.enqueue(s);
+
+        while (!q.empty()){
+            Vertex u = q.front();
+            q.dequeue();
+            for (Vertex v : graph.get_adj(u)){
+                if (color[v] == Color::WHITE){
+                    color[v] = Color::GRAY;
+                    distance[v] = distance[u] + 1;
+                    parent[v] = u;
+                    order.push_back(v);
+                    q.enqueue(v);
+                }
+            }
+            color[u] = Color::BLACK;
+        }
+    }
+
+    int getDistance(const Vertex& v){ return distance[v]; }
 };
 
-void BFS::runBFS(const Vertex& s){
-    //inicializacao dos vector feitas no constutor, agora a inicializacao do source
-    color[s] = Color::GRAY; //inicializa o source como "a explorar"
-    distance[s] = 0; //s esta a distancia 0 se si mesmo
-    parent[s] = NIL; //s nao tem predecessores
-
-    Queue<Vertex> q;
-    q.enqueue(s); //enfileira o source para analise de seus adjacentes
-    
-    while (!q.empty())
-    {
-       Vertex u = q.front(); //pega o elemento da frente
-       q.dequeue(); //desenfileira o elemento
-       for (Vertex v : graph.get_adj(u)){ //pra cada vertice v dentro da lista de adjacencia u desse vertice
-            if(color[v] == Color::WHITE){ 
-                color[v] = Color::GRAY; //muda a cor pra CINZA
-                distance[v] = distance[u] + 1; //aumenta a distancia do vertice adjacente em 1
-                parent[v] = u; //coloca u, que o vertice enfileirado, como antecessor dos vertices consultados
-                order.push_back(v); //registra a ordem
-                q.enqueue(v);
-            }
-       }
-       color[u] = Color::BLACK; //muda a cor do vertice na fila para preto
-    }
-    
-}
-
-int BFS::getDistance(const Vertex& v){
-    return distance[v];
-}
-
-Color BFS::getColor(const Vertex& v){
-    return color[v];
-}
-
-Vertex BFS::getParent(const Vertex& v){
-    return parent[v];
-}
-
-vector<Vertex> BFS::getOrder() const{
-    return order;
-}
-
-void BFS::printBFS(){
-    cout << "distancia do vertice s ate os outros: " << endl;
-    for(size_t v = 0; v < distance.size(); v++){
-        if(distance[v] == INF)
-            cout << v << ": INF (inalcancavel)\n";
-        else
-            cout << v << ": " << distance[v] << endl;
-    }
-
-    cout << "\nPais (arvore de BFS):\n";
-    for(size_t v = 0; v < parent.size(); v++){
-        if(parent[v] != NIL)
-            cout << parent[v] << " -> " << v << endl;
-    }
-
-    cout << "\nOrdem de visita:\n";
-    for(Vertex v : order){
-        cout << v << " ";
-    }
-    cout << endl;
-}
-
-void fillBFS(GraphAL g){
-    Vertex s;
-
-    cout << "Digite o vertice de origem para a BFS" << endl;
-    cin >> s; //recebe o vertice de origem
-
-    BFS bfs(g);
-    bfs.runBFS(s);
-    bfs.printBFS();
-}
-//-----------------------------------------------------------------------------------------------------------------------------
-//TABULEIRO--------------------------------------------------------------------------------------------------------------------
-
+// CHESSBOARD
 class Chessboard{
 private:
     GraphAL graph;
+
 public:
-    //construtor
-    Chessboard(): graph(64){
-        createChessboard();
-    }
+    Chessboard(): graph(64){ createChessboard(); }
 
-    //metodos
-    void createChessboard();
-    GraphAL& getGraph();
+    void createChessboard(){
+        int dx[8] = {2, 2, 1, 1, -1, -1, -2, -2};
+        int dy[8] = {1, -1, 2, -2, 2, -2, 1, -1};
 
-    string posicaoParaNotacao(int x, int y);
-    pair<int, int> notacaoParaPosicao(const string& s);
-
-    vector<string> getHorseMoves(const string& pos);
-
-    int notacaoParaIndice(const string& s);
-    string indiceParaNotacao(int idx);
-};
-
-void Chessboard::createChessboard(){
-    uint qtd_vertices = 64;
-
-    GraphAL g(qtd_vertices);
-
-    //movimentos do cavalo
-    int dx[8] = {2, 2, 1, 1, -1, -1, -2, -2};
-    int dy[8] = {1, -1, 2, -2, 2, -2, 1, -1};
-
-    for (int x = 0; x < 8; x++){
-        for(int y = 0; y < 8; y++){
-            int u = x * 8 + y;
-            for(int k = 0; k < 8; k++){
-                int nx = x + dx[k];
-                int ny = y + dy[k];
-                if (nx >= 0 && nx < 8 && ny >= 0 && ny < 8){
-                    int v = nx * 8 + ny;
-                    graph.add_edge(u, v);
+        for (int x = 0; x < 8; x++){
+            for (int y = 0; y < 8; y++){
+                int u = x * 8 + y;
+                for (int k = 0; k < 8; k++){
+                    int nx = x + dx[k];
+                    int ny = y + dy[k];
+                    if (nx >= 0 && nx < 8 && ny >= 0 && ny < 8){
+                        int v = nx * 8 + ny;
+                        graph.add_edge(u, v);
+                    }
                 }
             }
         }
     }
-    
-    graph.print_adjacency_list(graph); //so pra teste
-}
 
-GraphAL& Chessboard::getGraph(){
-    return graph;
-}
+    GraphAL& getGraph(){ return graph; }
 
-string Chessboard::posicaoParaNotacao(int x, int y){
-    return string(1, 'a' + y) + string(1, '1' + x);
-}
-
-pair<int, int> Chessboard::notacaoParaPosicao(const string& s){
-    return {s[1] - '1', s[0] - 'a'};
-}
-
-vector<string> Chessboard::getHorseMoves(const string& pos){
-    auto [x, y] = notacaoParaPosicao(pos);
-    vector<string> moves;
-    int dx[8] = {2, 2, 1, 1, -1, -1, -2, -2};
-    int dy[8] = {1, -1, 2, -2, 2, -2, 1, -1};
-
-    for(int k = 0; k < 8; k++){
-        int nx = x + dx[k];
-        int ny = y + dy[k];
-        if (nx >= 0 && nx < 8 && ny >= 0 && ny < 8){
-            moves.push_back(posicaoParaNotacao(nx, ny));
-        }
+    // conversoes
+    pair<int,int> notacaoParaPosicao(const string& s){
+        int col = s[0] - 'a';
+        int row = s[1] - '1';
+        return {row, col};
     }
-    return moves;
-}
 
-int Chessboard::notacaoParaIndice(const string& s){
-    auto [x, y] = notacaoParaPosicao(s);
-    return x*8 + y;
-}
+    vector<int> getHorseMoves(const string& reiPos){
+        pair<int,int> p = notacaoParaPosicao(reiPos);
+        int x = p.first;
+        int y = p.second;
+        vector<int> moves;
+        int dx[8] = {2, 2, 1, 1, -1, -1, -2, -2};
+        int dy[8] = {1, -1, 2, -2, 2, -2, 1, -1};
+        for(int k = 0; k < 8; k++){
+            int nx = x + dx[k];
+            int ny = y + dy[k];
+            if (nx >= 0 && nx < 8 && ny >= 0 && ny < 8){
+                moves.push_back(nx * 8 + ny);
+            }
+        }
+        return moves;
+    }
 
-string Chessboard::indiceParaNotacao(int idx){
-    int x = idx / 8;
-    int y = idx % 8;
-    return posicaoParaNotacao(x, y);
-}
+    int notacaoParaIndice(const string& s){
+        pair<int,int> p = notacaoParaPosicao(s);
+        int x = p.first;
+        int y = p.second;
+        return x*8 + y;
+    }
+};
 
+// EXECUCAO
 void executaAplicacao(){
     Chessboard board;
+    GraphAL& g = board.getGraph();
 
-    string inicio, fim;
-//terminar esse negocio aqui
+    int T;
+    if(!(cin >> T)) return;
+
+    for(int t=0; t<T; t++){
+        vector<string> cavalos_pos(4);
+        string rei_pos;
+        for(int i=0;i<4;i++) cin >> cavalos_pos[i];
+        cin >> rei_pos;
+
+        vector<int> cavalos_idx(4);
+        for(int i=0;i<4;i++) cavalos_idx[i] = board.notacaoParaIndice(cavalos_pos[i]);
+
+        vector<int> alvos = board.getHorseMoves(rei_pos);
+
+        vector<int> dist(4, INF);
+        for(int i=0;i<4;i++){
+            int src = cavalos_idx[i];
+            // se o cavalo ja esta em uma casa que ameaca o rei
+            bool jaAmeaca = false;
+            for(int a : alvos) if(a == src) { jaAmeaca = true; break; }
+            if(jaAmeaca) { dist[i] = 0; continue; }
+
+            BFS bfs(g);
+            bfs.runBFS(src);
+
+            int best = INF;
+            for(int a : alvos){
+                int d = bfs.getDistance(a);
+                if(d < best) best = d;
+            }
+            dist[i] = best;
+        }
+
+        int menor = INF;
+        for(int i=0;i<4;i++) if(dist[i] < menor) menor = dist[i];
+
+        if(menor == INF){
+            // nenhum cavalo alcanca as casas que atacam o rei -> linha vazia
+            cout << '\n';
+        } else {
+            bool first = true;
+            for(int i=0;i<4;i++){
+                if(dist[i] == menor){
+                    if(!first) cout << ' ';
+                    cout << dist[i];
+                    first = false;
+                }
+            }
+            cout << '\n';
+        }
+    }
 }
 
-//MAIN-----------------------------------------------------------------------------------------------------------------------------
 int main(){
-    Chessboard board;
-
-
+    executaAplicacao();
     return 0;
 }
