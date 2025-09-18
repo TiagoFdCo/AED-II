@@ -1,73 +1,60 @@
 #include <iostream>
 #include <list>
-#include <vector>
-#include <iterator>
 
 using namespace std;
 
 template <typename T>
-class Queue{
+class Queue {
 private:
-    T item;
-    list<T> *qlist; //lista duplamente encadeada dinamica
+    list<T> qlist; // lista duplamente encadeada
     int num_itens;
 
 public:
+    // construtor
+    Queue() : num_itens(0) {}
 
-    //construtores
-    Queue(): item(0), num_itens(0){
-        qlist = new list<T> [item]; // inicializo a lista nova 
-    }
+    // destrutor (não precisa de delete, pois list se limpa sozinha)
+    ~Queue() = default;
 
-    //destrutor
-    ~Queue(){
-        delete[] qlist;
-        qlist = nullptr;
-    }
-    void enqueue(T item); //adiciona um item 
-    void dequeue(); //retira um item
-    T front(); //retorna o item na frente da fila
-    int size(); //retorna o tamanho da fila
-    bool empty(); //verifica de a fila está vazia (true ou false)
+    void enqueue(T item);  // adiciona um item 
+    void dequeue();        // retira um item
+    T front();             // retorna o item na frente da fila
+    int size();            // retorna o tamanho da fila
+    bool empty();          // verifica se a fila está vazia
 };
 
 template<typename T>
-void Queue<T>::enqueue(T item){
-    qlist->push_back(item);
+void Queue<T>::enqueue(T item) {
+    qlist.push_back(item);
     num_itens++;
 }
 
 template<typename T>
-void Queue<T>::dequeue(){
-    qlist->pop_front();
-    num_itens--;
-}
-
-template<typename T>
-T Queue<T>::front(){
-    return qlist->front();
-}
-
-template<typename T>
-bool Queue<T>::empty(){
-    if(num_itens == 0){
-        return true;
+void Queue<T>::dequeue() {
+    if (!qlist.empty()) {
+        qlist.pop_front();
+        num_itens--;
     }
-    return false;
 }
 
-int main(){
-    Queue<int> q;
-    q.enqueue(1);
-    q.enqueue(3);
-    q.enqueue(7);
-    q.enqueue(8);
+template<typename T>
+T Queue<T>::front() {
+    if (!qlist.empty()) {
+        return qlist.front();
+    }
+    throw runtime_error("Fila vazia!");
+}
 
-    cout << q.front() << endl;
+template<typename T>
+int Queue<T>::size() {
+    return num_itens;
+}
 
-    q.dequeue();
+template<typename T>
+bool Queue<T>::empty() {
+    return num_itens == 0;
+}
 
-    cout << q.front() << endl;
-
+int main() {
     return 0;
 }
